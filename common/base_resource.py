@@ -36,6 +36,12 @@ class BaseResource(object):
     def process_request(self):
         pass
 
+    def populate_request_arguments(self):
+        pass
+
+    def initialize_class_attributes(self):
+        pass
+
     def send_response(self):
         self.response['success'] = True
         if self.status_code not in SUCCESS_STATUS_CODES:
