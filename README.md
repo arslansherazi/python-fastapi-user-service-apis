@@ -17,3 +17,7 @@ sh scripts/install_requirements.sh
 ~~~
 pipenv install package_name
 ~~~
+
+## Important Points
+- Do not push .env file
+- It should be present at server level

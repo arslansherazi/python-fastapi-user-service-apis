@@ -7,6 +7,12 @@ NOT_FOUND_RESPONSE = {
     }
 }
 PNG_IMAGE_EXTENSION = 'png'
-PROFILE_IMAGE_FILE_PATH = 'users/{user_id}/images/profile'
-FILES_BASE_URL = 'https://picpo-files.s3.us-east-2.amazonaws.com'
-USER_SERVICE_DB_NAME = 'spreader_user_service_db'
+UNAUTHORIZED_REQUEST_RESPONSE = {
+    'status_code': 401,
+    'message': 'Unauthorized access',
+    'success': False
+}
+PROFILE_IMAGE_DIMENSIONS = (400, 400)
+UTF_CHARSET = 'UTF-8'
+CONTRIBUTOR_USER_TYPE = 2
+AWS_SENDER_EMAIL = 'arslan.python.dev@gmail.com'

@@ -15,25 +15,26 @@ class BaseResource(object):
         self.request_args = json.loads(request_args.json())
         self.response = {}
         self.is_send_response = False
+        self.logger = None
 
-    def request_flow(self):
+    async def request_flow(self):
         logger = None
         try:
             log_file_path = 'logs/apis/{end_point}'.format(end_point=self.end_point)
             log_file = '{end_point}_v{version}.log'.format(end_point=self.end_point, version=self.version)
-            logger = CommonHelpers.get_logger(log_file_path, log_file)
-            self.process_request()
+            self.logger = CommonHelpers.get_logger(log_file_path, log_file)
+            await self.process_request()
             return self.send_response()
         except Exception:
-            if logger:
-                logger.exception()
+            if self.logger:
+                self.logger.exception('Exception occured')
             self.status_code = codes.INTERNAL_SERVER_ERROR
             self.response = {
                 'message': 'Internal Server Error'
             }
             return self.send_response()
 
-    def process_request(self):
+    async def process_request(self):
         pass
 
     def populate_request_arguments(self):

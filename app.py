@@ -4,14 +4,9 @@ from functools import lru_cache
 import uvicorn
 from fastapi import FastAPI
 
-from routing.v1 import v1_router
-
 from settings.config import Settings
 
 app = FastAPI()
-
-# import middlewares
-from security.middlewares import *
 
 
 @lru_cache()
@@ -26,6 +21,8 @@ def add_routing():
     """
     Adds routing into app
     """
+    from routing.v1 import v1_router
+
     app.include_router(v1_router)
 
 
