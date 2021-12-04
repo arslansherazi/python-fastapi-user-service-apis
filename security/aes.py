@@ -27,9 +27,10 @@ class AESCipher(object):
 
     @classmethod
     def decrypt(cls, encrypted_data):
+        encrypted_data = encrypted_data.replace('_', '/').replace(' ', '+')
         encrypted_data = base64.b64decode(encrypted_data)
         cipher = AES.new(
-            key=cls.settings.secret_key, mode=cls.settings.encryption_mode, IV=cls.settings.encryption_salt
+            key=cls.settings.encryption_key, mode=AES.MODE_CBC, IV=cls.settings.encryption_salt
         )
         data = cipher.decrypt(encrypted_data)
         data = cls.unpad(data)

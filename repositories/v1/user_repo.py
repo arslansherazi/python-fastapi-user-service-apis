@@ -7,6 +7,7 @@ class UserRepository(object):
     EMAIL_EXISTS_IN_SYSTEM_MESSAGE = 'email already registered with us. Please register with some other email'
     USER_NOT_EXISTS_MESSAGE = 'User does not exist in system'
     INCORRECT_PASSWORD_MESSAGE = 'Password is incorrect'
+    INCORRECT_CURRENT_PASSWORD_MESSAGE = 'Current password is incorrect'
 
     settings = get_settings()
 

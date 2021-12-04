@@ -105,3 +105,29 @@ class User(Base):
         query = query.with_entities(cls.id, cls.username, cls.email, cls.name, cls.password)
         query = query.filter(or_(cls.username == username, cls.email == username))
         return query.first()
+
+    @classmethod
+    def get_user_password(cls, user_id):
+        """
+        Gets user password
+
+        :param int user_id: user id
+
+        :rtype str
+        :returns user password
+        """
+        query = session.query()
+        query = query.with_entities(cls.password)
+        return query.first().password
+
+    @classmethod
+    def update_password(cls, user_id, password):
+        """
+        Updated password
+
+        :param int user_id: user id
+        :param str password: password
+        """
+        user = session.query(cls).get(user_id)
+        user.password = password
+        session.commit()
