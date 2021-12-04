@@ -149,5 +149,5 @@ class Signup(BaseResource):
             self.prepare_profile_image_url()
             await self.upload_profile_image()
         await self.insert_user_into_db()
-        # await self.send_email()
+        await self.send_email()
         self.prepare_response()

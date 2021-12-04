@@ -1,8 +1,12 @@
+import json
+
 import boto3
 from passlib.context import CryptContext
 from jose import jwt
 
 from app import get_settings
+from common.constants import SUCCESS_STATUS_CODES
+from security.aes import AESCipher
 
 settings = get_settings()
 
@@ -55,3 +59,22 @@ def create_jwt_token(data: dict):
     """
     encoded_jwt_token = jwt.encode(data, settings.secret_key, algorithm=settings.algorithm)
     return encoded_jwt_token
+
+
+def encrypt_response(request_args, response):
+    """
+    Encrypt response
+
+    :param request_args: request args
+    :param response: response
+
+    :rtype str
+    :returns encrypted response
+    """
+    request_args = json.loads(request_args.json())
+    if (
+            response.get('status_code') in SUCCESS_STATUS_CODES and
+            request_args.get('encryption_disable_key') != settings.encryption_disable_key
+    ):
+        return AESCipher.encrypt(response)
+    return response

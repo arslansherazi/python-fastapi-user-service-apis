@@ -21,6 +21,7 @@ pipenv install package_name
 ## Important Points
 - Do not push .env file
 - It should be present at server level
+- BaseModel validation does not support variables starting with underscore
 
 ## Get 32 characters long secret Key
 ~~~

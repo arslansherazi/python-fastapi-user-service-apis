@@ -10,3 +10,4 @@ class SignupApiValidator(BaseModel):
     password: str
     name: str
     profile_image: Optional[FilePath] = None
+    encryption_disable_key: Optional[str] = None

@@ -6,8 +6,13 @@ from apis.v1.login.api import Login
 from apis.v1.login.validator import LoginApiValidator
 from apis.v1.signup.api import Signup
 from apis.v1.signup.validator import SignupApiValidator
-from common.constants import NOT_FOUND_RESPONSE, UNAUTHORIZED_REQUEST_RESPONSE, BAD_TOKEN_RESPONSE
+from app import get_settings
+from common.constants import NOT_FOUND_RESPONSE, UNAUTHORIZED_REQUEST_RESPONSE, BAD_TOKEN_RESPONSE, SUCCESS_STATUS_CODES
+from common.utils import encrypt_response
+from security.aes import AESCipher
 from security.authentication import basic_auth_authentication, jwt_authentication
+
+settings = get_settings()
 
 # v1 router
 v1_router = APIRouter(
@@ -25,7 +30,7 @@ async def signup_api(
     if not is_authenticated:
         return UNAUTHORIZED_REQUEST_RESPONSE
     response = await Signup(request=request, request_args=request_args).request_flow()
-    return response
+    return encrypt_response(request_args, response)
 
 
 # v1 router paths
@@ -36,7 +41,7 @@ async def login_api(
     if not is_authenticated:
         return UNAUTHORIZED_REQUEST_RESPONSE
     response = await Login(request=request, request_args=request_args).request_flow()
-    return response
+    return encrypt_response(request_args, response)
 
 
 # v1 router paths
@@ -47,4 +52,4 @@ async def change_password_api(
     if not user_id:
         return BAD_TOKEN_RESPONSE
     response = await ChangePassword(request=request, request_args=request_args, user_id=user_id).request_flow()
-    return response
+    return encrypt_response(request_args, response)
