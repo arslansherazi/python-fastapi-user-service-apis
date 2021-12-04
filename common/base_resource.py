@@ -18,7 +18,6 @@ class BaseResource(object):
         self.logger = None
 
     async def request_flow(self):
-        logger = None
         try:
             log_file_path = 'logs/apis/{end_point}'.format(end_point=self.end_point)
             log_file = '{end_point}_v{version}.log'.format(end_point=self.end_point, version=self.version)

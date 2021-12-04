@@ -1,4 +1,5 @@
 from datetime import datetime
+from operator import or_
 
 from app import get_settings
 from common.constants import CONTRIBUTOR_USER_TYPE
@@ -66,7 +67,7 @@ class User(Base):
 
     @classmethod
     def insert_user_into_db(
-            cls, logger, user_type, name, username, email, password, profile_image_url, email_verification_code
+            cls, user_type, name, username, email, password, profile_image_url, email_verification_code
     ):
         """
         Adds user into the system
@@ -79,6 +80,9 @@ class User(Base):
         :param str password: password
         :param str profile_image_url: profile image url
         :param int email_verification_code: email verification code
+
+        :rtype int
+        :returns user id
         """
         user = cls(
             name=name, user_type=user_type, username=username, email=email, password=password,
@@ -86,3 +90,18 @@ class User(Base):
         )
         session.add(user)
         session.commit()
+        return user.id
+
+    @classmethod
+    def get_login_info(cls, username):
+        """
+        Gets user login info
+
+        :param str username: username
+
+        :returns user login info
+        """
+        query = session.query()
+        query = query.with_entities(cls.id, cls.username, cls.email, cls.name, cls.password)
+        query = query.filter(or_(cls.username == username, cls.email == username))
+        return query.first()

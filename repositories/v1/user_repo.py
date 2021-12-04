@@ -5,6 +5,8 @@ from common.common_helpers import CommonHelpers
 class UserRepository(object):
     USERNAME_ALREADY_EXIST = 'username already exists'
     EMAIL_EXISTS_IN_SYSTEM_MESSAGE = 'email already registered with us. Please register with some other email'
+    USER_NOT_EXISTS_MESSAGE = 'User does not exist in system'
+    INCORRECT_PASSWORD_MESSAGE = 'Password is incorrect'
 
     settings = get_settings()
 

@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     profile_image_file_path: str
     files_base_url: str
     aws_ses_region: str
+    secret_key: str
+    algorithm: str
 
     class Config:
         env_file = '.env'

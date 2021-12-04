@@ -4,9 +4,10 @@ from app import get_settings
 from common.base_resource import BaseResource
 from common.common_helpers import CommonHelpers
 from common.constants import AWS_SENDER_EMAIL, UTF_CHARSET, PNG_IMAGE_EXTENSION
-from common.utils import get_boto_client
+from common.utils import get_boto_client, get_password_hash, create_jwt_token
 from models.v1.user import User
 from repositories.v1.user_repo import UserRepository
+from security.aes import AESCipher
 
 
 class Signup(BaseResource):
@@ -31,6 +32,7 @@ class Signup(BaseResource):
         self.profile_image = self.request_args.get('profile_image')
         self.image_name = ''
         self.image_path = ''
+        self.password = get_password_hash(self.password)
 
     def check_username_availability(self):
         """
@@ -82,8 +84,8 @@ class Signup(BaseResource):
         """
         Adds user into the system
         """
-        User.insert_user_into_db(
-            self.logger, self.user_type, self.name, self.username, self.email, self.password, self.profile_image_url,
+        self.user_id = User.insert_user_into_db(
+            self.user_type, self.name, self.username, self.email, self.password, self.profile_image_url,
             self.email_verification_code
         )
 
@@ -122,7 +124,13 @@ class Signup(BaseResource):
         """
         self.response = {
             'data': {
-                'is_signed_up': True
+                'is_signed_up': True,
+                'token': create_jwt_token(data={
+                    '__ud': AESCipher.encrypt(data=self.user_id)
+                }),
+                'name': self.name,
+                'email': self.email,
+                'username': self.username
             }
         }
 
@@ -141,5 +149,5 @@ class Signup(BaseResource):
             self.prepare_profile_image_url()
             await self.upload_profile_image()
         await self.insert_user_into_db()
-        await self.send_email()
+        # await self.send_email()
         self.prepare_response()
