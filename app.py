@@ -1,24 +1,29 @@
 import optparse
+from functools import lru_cache
 
 import uvicorn
 from fastapi import FastAPI
 
-from routing.v1 import v1_router
-from routing.v2 import v2_router
-
+from settings.config import Settings
 
 app = FastAPI()
 
-# import middlewares
-from security.middlewares import *
+
+@lru_cache()
+def get_settings():
+    """
+    Gets environment settings
+    """
+    return Settings()
 
 
 def add_routing():
     """
     Adds routing into app
     """
+    from routing.v1 import v1_router
+
     app.include_router(v1_router)
-    app.include_router(v2_router)
 
 
 def run_app(default_host='127.0.0.1', default_port='5000'):

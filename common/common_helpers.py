@@ -1,8 +1,15 @@
 import errno
+import io
 import logging
 import os
 import random
 import types
+
+from PIL import Image
+import boto3
+
+from app import get_settings
+from common.constants import PROFILE_IMAGE_DIMENSIONS
 
 
 class CommonHelpers(object):
@@ -82,3 +89,72 @@ class CommonHelpers(object):
             e.strerror = "Unable to load configuration file (%s)" % e.strerror
             raise
         return d
+
+    @staticmethod
+    def process_image(image, is_profile_image=False, is_post_image=False):
+        """
+        Process image. Verifies the size of image and converts image to required size and also makes small image
+        if required
+
+        :param FileStorage image: image
+        :param boolean is_profile_image: profile image flag
+        :param boolean is_post_image: post image flag
+
+        :returns image
+        """
+        uploaded_image = Image.open(image)
+        image_dimensions = uploaded_image.size
+        if is_profile_image:
+            image = uploaded_image
+            if image_dimensions != PROFILE_IMAGE_DIMENSIONS:
+                image = uploaded_image.resize(PROFILE_IMAGE_DIMENSIONS)
+        elif is_post_image:
+            image = uploaded_image
+        image = CommonHelpers.convert_image_to_bytes(image=image, format=uploaded_image.format.lower())
+        return image
+
+    @staticmethod
+    def put_s3_object(file, file_name, file_path=None):
+        """
+        Puts storage object into s3
+
+        :param file: file
+        :param str file_name: file name
+        :param str file_path: file path
+
+        :rtype bool
+        :returns file uploading flag
+        """
+        settings = get_settings()
+        try:
+            is_object_uploaded = True
+            file_key = file_name
+            bucket = settings.aws_s3_bucket_name
+            client = boto3.client(
+                's3', aws_secret_access_key=settings.aws_secret_access_key, aws_access_key_id=settings.aws_access_key_id
+            )
+            if file_path:
+                file_key = '{directory}/{file_name}'.format(directory=file_path, file_name=file_name)
+            client.put_object(
+                Bucket=bucket, Key=file_key, Body=file, ACL=settings.aws_acl_public_read,
+                StorageClass=settings.aws_standard_storage_class
+            )
+        except Exception:
+            logger = CommonHelpers.get_logger(log_file_path='logs/aws', log_file='s3_logs.log')
+            logger.exception('Exception occurred while uploading storage object on AWS S3')
+            is_object_uploaded = False
+        return is_object_uploaded
+
+    @staticmethod
+    def convert_image_to_bytes(image, format):
+        """
+        Converts image file into bytes. It also converts format of image to png
+
+        :param image: image
+        :param str format: image format
+
+        :returns bytes image
+        """
+        in_mem_file = io.BytesIO()
+        image.save(in_mem_file, format=format)
+        return in_mem_file.getvalue()

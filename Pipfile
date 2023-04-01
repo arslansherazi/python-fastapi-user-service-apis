@@ -11,6 +11,12 @@ requests = "*"
 pycrypto = "*"
 python-jose = {extras = ["cryptography"], version = "*"}
 passlib = {extras = ["bcrypt"], version = "*"}
+sqlalchemy = "*"
+mysql = "*"
+pillow = "*"
+boto3 = "*"
+mysql-connector = "*"
+mysqlclient = "*"
 
 [dev-packages]
 
