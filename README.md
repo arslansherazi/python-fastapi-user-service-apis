@@ -1,6 +1,4 @@
-# Spreader
-
-Online Message Sharing App
+# FastAPI User Service
 
 ## Setup Environment
 ~~~
