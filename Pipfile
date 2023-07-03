@@ -10,6 +10,11 @@ boto3 = "*"
 mysql-connector = "*"
 uvicorn = "*"
 pycryptodome = "*"
+requests = "*"
+pillow = "*"
+passlib = "*"
+python-jose = "*"
+pydantic = {version = "*", extras = ["dotenv"]}
 
 [dev-packages]
 
