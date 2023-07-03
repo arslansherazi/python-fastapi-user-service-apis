@@ -8,6 +8,8 @@ fastapi = "*"
 sqlalchemy = "*"
 boto3 = "*"
 mysql-connector = "*"
+uvicorn = "*"
+pycryptodome = "*"
 
 [dev-packages]
 
